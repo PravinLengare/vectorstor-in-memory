@@ -42,7 +42,7 @@ if __name__ == "__main__":
     # Load vectors back
     new_vectorstore = FAISS.load_local("faiss_index_gemini", embeddings, allow_dangerous_deserialization=True)
 
-    # Custom prompt instead of hub (avoids 404 error)
+    #retrieval_qa_chat_prompt = hub.pull("langchain-ai/retrieval_qa_chat")
     prompt = PromptTemplate.from_template("""
     Use the following context to answer the user's question. If you don't know the answer, say so.
 
@@ -61,12 +61,12 @@ if __name__ == "__main__":
     )
 
     # Chain setup
-    combine_docs_chain = create_stuff_documents_chain(llm, prompt)
+    combine_docs_chain = create_stuff_documents_chain(llm, prompt=prompt)
     retrieval_chain = create_retrieval_chain(
         retriever=new_vectorstore.as_retriever(),
         combine_docs_chain=combine_docs_chain
     )
 
     # Run the query
-    result = retrieval_chain.invoke({"input": "Give me any  in 3 sentences"})
+    result = retrieval_chain.invoke({"input": "Give me the any 3 sentences"})
     print("\nAnswer:\n", result["answer"])
